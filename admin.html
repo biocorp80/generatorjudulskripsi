@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosbing.ai - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .token-badge {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="flex flex-col">
+                    <img src="/Asset/LOGO Dosbing App_upscayl_4x_upscayl-standard-4x.png" alt="Dosbing.ai Admin"
+                        class="h-12 object-contain" />
+                    <span
+                        class="text-[9px] md:text-[10px] font-semibold text-slate-500 tracking-wide mt-1 text-center">Admin
+                        Dashboard</span>
+                </div>
+            </div>
+            <button id="logout-btn"
+                class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-red-100 transition-colors">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-key text-2xl"></i>
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold mb-1" id="stat-total">0</h3>
+                <p class="text-blue-100 text-sm font-medium">Total Token</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-700 to-blue-800 text-white p-6 rounded-2xl shadow-lg">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-crown text-2xl"></i>
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold mb-1" id="stat-admin">0</h3>
+                <p class="text-blue-100 text-sm font-medium">Admin Token</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white p-6 rounded-2xl shadow-lg">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-star text-2xl"></i>
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold mb-1" id="stat-vip">0</h3>
+                <p class="text-amber-100 text-sm font-medium">VIP Token</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-2xl shadow-lg">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold mb-1" id="stat-user">0</h3>
+                <p class="text-emerald-100 text-sm font-medium">User Token</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+            <h2 class="text-lg font-bold text-slate-800 mb-4">Manajemen Token</h2>
+            <div class="flex flex-wrap gap-3">
+                <button id="add-token-btn"
+                    class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Token
+                </button>
+                <button id="ai-settings-btn"
+                    class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-sm">
+                    <i class="fas fa-robot mr-2"></i>AI Config
+                </button>
+                <button id="bulk-upload-btn"
+                    class="bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-all shadow-sm">
+                    <i class="fas fa-file-excel mr-2"></i>Upload Excel
+                </button>
+                <button id="refresh-btn"
+                    class="bg-slate-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-slate-700 transition-all shadow-sm">
+                    <i class="fas fa-sync mr-2"></i>Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-4">
+            <div class="flex gap-2">
+                <button class="filter-tab active" data-filter="all">
+                    <i class="fas fa-th mr-2"></i>Semua
+                </button>
+                <button class="filter-tab" data-filter="admin">
+                    <i class="fas fa-crown mr-2"></i>Admin
+                </button>
+                <button class="filter-tab" data-filter="vip">
+                    <i class="fas fa-star mr-2"></i>VIP
+                </button>
+                <button class="filter-tab" data-filter="user">
+                    <i class="fas fa-user mr-2"></i>User
+                </button>
+            </div>
+        </div>
+
+        <!-- Token List -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase">Token</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase">Type</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase">Digunakan</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase">Dibuat</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-slate-600 uppercase">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="token-table-body" class="divide-y divide-slate-200">
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                                <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
+                                <p class="font-semibold">Memuat data...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Token Modal -->
+    <div id="add-modal"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl fade-in">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6">Tambah Token Baru</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-600 mb-2">Token (16 karakter)</label>
+                    <input type="text" id="new-token" maxlength="16"
+                        class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none font-mono"
+                        placeholder="xxxxxxxxxxxxxxxx">
+                    <button id="generate-token-btn" class="mt-2 text-blue-600 text-sm font-semibold hover:underline">
+                        <i class="fas fa-random mr-1"></i>Generate Random
+                    </button>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-600 mb-2">Type</label>
+                    <select id="new-token-type"
+                        class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none">
+                        <option value="admin">Admin</option>
+                        <option value="vip">VIP</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button id="cancel-add-btn"
+                    class="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-colors">
+                    Batal
+                </button>
+                <button id="confirm-add-btn"
+                    class="flex-1 px-6 py-3 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    Tambah
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Upload Modal -->
+    <div id="bulk-modal"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl fade-in">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6">Bulk Upload Excel</h3>
+            <div class="space-y-4">
+                <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-blue-500 transition-colors cursor-pointer"
+                    id="upload-area">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-slate-400 mb-3"></i>
+                    <p class="text-slate-600 font-semibold mb-1">Klik atau drop file Excel</p>
+                    <p class="text-xs text-slate-400">Format: Token di kolom A, tanpa header</p>
+                    <input type="file" id="excel-file" accept=".xlsx,.xls" class="hidden">
+                </div>
+                <div id="file-info" class="hidden bg-blue-50 p-4 rounded-xl border border-blue-200">
+                    <p class="text-sm font-semibold text-blue-800"><i class="fas fa-file-excel mr-2"></i><span
+                            id="file-name"></span></p>
+                    <p class="text-xs text-blue-600 mt-1"><span id="token-count">0</span> token ditemukan</p>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button id="cancel-bulk-btn"
+                    class="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-colors">
+                    Batal
+                </button>
+                <button id="confirm-bulk-btn"
+                    class="flex-1 px-6 py-3 rounded-xl font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                    disabled>
+                    Upload
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Settings Modal -->
+    <div id="ai-modal"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <i class="fas fa-robot text-blue-600 mr-3"></i>AI Configuration
+            </h3>
+
+            <!-- Current Status -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex items-center justify-between">
+                <div>
+                    <h4 class="text-sm font-bold text-slate-500 uppercase">Active Provider</h4>
+                    <p class="text-lg font-bold text-slate-800" id="current-provider-display">Loading...</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-500 uppercase">Current Model</h4>
+                    <p class="text-lg font-bold text-blue-600" id="current-model-display">Loading...</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Provider Config -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-600 mb-2">AI Provider</label>
+                    <select id="ai-provider"
+                        class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none">
+                        <option value="gemini">Google Gemini (Free/Paid)</option>
+                        <option value="openrouter">OpenRouter (Aggregator)</option>
+                    </select>
+                </div>
+
+                <!-- API Keys -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="gemini-key-container">
+                        <label class="block text-sm font-bold text-slate-600 mb-2">
+                            Gemini API Key
+                            <span id="gemini-key-status" class="ml-2 text-xs font-normal text-slate-400"></span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="password" id="gemini-key" placeholder="Paste API key to auto-detect models"
+                                class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none">
+                            <button type="button" id="detect-gemini-btn"
+                                class="bg-blue-100 text-blue-600 px-4 rounded-xl hover:bg-blue-200 transition-colors border-2 border-blue-200 font-semibold whitespace-nowrap">
+                                <i class="fas fa-sync mr-1"></i>Detect
+                            </button>
+                        </div>
+                    </div>
+                    <div id="openrouter-key-container">
+                        <label class="block text-sm font-bold text-slate-600 mb-2">
+                            OpenRouter Key
+                            <span id="openrouter-key-status" class="ml-2 text-xs font-normal text-slate-400"></span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="password" id="openrouter-key" placeholder="Paste API key to auto-detect models"
+                                class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none">
+                            <button type="button" id="detect-openrouter-btn"
+                                class="bg-blue-100 text-blue-600 px-4 rounded-xl hover:bg-blue-200 transition-colors border-2 border-blue-200 font-semibold whitespace-nowrap">
+                                <i class="fas fa-sync mr-1"></i>Detect
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Config -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-600 mb-2">Model</label>
+                    <div>
+                        <!-- Unified Dropdown for both providers -->
+                        <select id="ai-model-select"
+                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none">
+                            <option value="">Select a model...</option>
+                        </select>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2" id="model-help-text">Select AI model from the dropdown</p>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button id="cancel-ai-btn"
+                    class="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-colors">
+                    Batal
+                </button>
+                <button id="save-ai-btn"
+                    class="flex-1 px-6 py-3 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200">
+                    <i class="fas fa-save mr-2"></i>Simpan Konfigurasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #64748b;
+            background-color: transparent;
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover {
+            background-color: #f1f5f9;
+        }
+
+        .filter-tab.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+
+    <script type="module" src="/src/js/admin.js"></script>
+</body>
+
+</html>

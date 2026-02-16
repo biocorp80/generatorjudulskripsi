@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosbing.ai - Lock Screen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1d4ed8 0%, #10b981 100%);
+            min-height: 100vh;
+        }
+
+        .lock-container {
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .token-input {
+            letter-spacing: 0.3em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .5;
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-10px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(10px);
+            }
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center p-4">
+    <div class="lock-container bg-white rounded-3xl p-10 max-w-md w-full shadow-2xl">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <div class="inline-block">
+                <div class="flex flex-col items-center">
+                    <div class="flex flex-col items-center">
+                        <img src="/Asset/LOGO DOSBING VERTIKAL TRASNPARAN.png" alt="Dosbing.ai"
+                            class="h-28 object-contain drop-shadow-md mb-3" />
+                        <span class="text-xs font-medium text-slate-500 tracking-wide">
+                            Teman Bimbingan Cerdas, Kapan Saja.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lock Screen Content -->
+        <div id="lock-screen">
+            <h2 class="text-2xl font-bold text-slate-800 text-center mb-2">Sistem Terproteksi</h2>
+            <p class="text-slate-500 text-center mb-8 text-sm">Masukkan token akses 16 karakter</p>
+
+            <div class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="token-input" maxlength="16" placeholder="••••••••••••••••"
+                        class="w-full px-6 py-4 pr-24 rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-blue-500 outline-none text-center text-lg font-bold text-slate-700"
+                        autocomplete="off" spellcheck="false" />
+                    <div class="absolute right-14 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-mono"
+                        id="char-counter">0/16</div>
+                    <button type="button" id="toggle-visibility"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors"
+                        title="Show/Hide Token">
+                        <i class="fas fa-eye text-lg"></i>
+                    </button>
+                </div>
+
+                <button id="unlock-btn"
+                    class="w-full bg-gradient-to-r from-blue-600 to-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    disabled>
+                    <i class="fas fa-unlock-alt mr-2"></i>
+                    Unlock
+                </button>
+            </div>
+
+            <!-- Status Message -->
+            <div id="status-message" class="hidden mt-6 p-4 rounded-xl text-center text-sm font-semibold"></div>
+
+            <!-- Info -->
+            <div class="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                <p class="text-xs text-blue-800 text-center">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Token bersifat <strong>sekali pakai</strong>. Hubungi admin jika memerlukan token akses.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-screen" class="hidden text-center">
+            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4">
+            </div>
+            <p class="text-slate-600 font-semibold pulse-animation">Memvalidasi token...</p>
+        </div>
+    </div>
+
+    <script type="module" src="/src/js/auth-standalone.js"></script>
+</body>
+
+</html>

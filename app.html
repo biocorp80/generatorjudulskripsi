@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosbing.ai - Research Path</title>
+    <meta name="description"
+        content="Dosbing.ai Research Path Generator - AI-powered academic research title generator for Indonesian students">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body class="text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-700">
+
+    <div class="min-h-screen flex flex-col">
+        <!-- Navigation -->
+        <nav class="bg-white/90 backdrop-blur-lg border-b border-slate-200 px-6 py-4 sticky top-0 z-50 no-print">
+            <div class="max-w-6xl mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="location.reload()">
+                    <img src="/Asset/LOGO Dosbing App_upscayl_4x_upscayl-standard-4x.png" alt="Dosbing.ai"
+                        class="h-12 object-contain transition-transform hover:scale-105" />
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="logout-btn"
+                        class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-red-100 transition-colors no-print">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-grow p-4 md:p-8 bg-slate-50/50">
+            <div class="max-w-6xl mx-auto">
+
+                <!-- Progress Bar (11 Steps) -->
+                <div class="mb-12 no-print overflow-x-auto pb-4 px-2">
+                    <div class="min-w-[800px] relative">
+                        <div class="progress-line-container">
+                            <div id="progress-fill" class="progress-line-fill"></div>
+                        </div>
+                        <div class="flex justify-between w-full">
+                            <div class="step-item" id="step-node-1">
+                                <div class="step-dot bg-blue-600 ring-4 ring-blue-50" id="dot-1"></div><span
+                                    class="step-label text-blue-600">Data</span>
+                            </div>
+                            <div class="step-item" id="step-node-2">
+                                <div class="step-dot bg-slate-200" id="dot-2"></div><span
+                                    class="step-label text-slate-400">Objek</span>
+                            </div>
+                            <div class="step-item" id="step-node-3">
+                                <div class="step-dot bg-slate-200" id="dot-3"></div><span
+                                    class="step-label text-slate-400">Masalah</span>
+                            </div>
+                            <div class="step-item" id="step-node-4">
+                                <div class="step-dot bg-slate-200" id="dot-4"></div><span
+                                    class="step-label text-slate-400">Validasi</span>
+                            </div>
+                            <div class="step-item" id="step-node-5">
+                                <div class="step-dot bg-slate-200" id="dot-5"></div><span
+                                    class="step-label text-slate-400">Metode</span>
+                            </div>
+                            <div class="step-item" id="step-node-6">
+                                <div class="step-dot bg-slate-200" id="dot-6"></div><span
+                                    class="step-label text-slate-400">Judul</span>
+                            </div>
+                            <div class="step-item" id="step-node-7">
+                                <div class="step-dot bg-slate-200" id="dot-7"></div><span
+                                    class="step-label text-slate-400">Revisi</span>
+                            </div>
+                            <div class="step-item" id="step-node-8">
+                                <div class="step-dot bg-slate-200" id="dot-8"></div><span
+                                    class="step-label text-slate-400">Telaah</span>
+                            </div>
+                            <div class="step-item" id="step-node-9">
+                                <div class="step-dot bg-slate-200" id="dot-9"></div><span
+                                    class="step-label text-slate-400">Kerangka</span>
+                            </div>
+                            <div class="step-item" id="step-node-10">
+                                <div class="step-dot bg-slate-200" id="dot-10"></div><span
+                                    class="step-label text-slate-400">Final</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 1: Data Diri -->
+                <div id="step-1"
+                    class="fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-32 -mt-32 opacity-50 blur-3xl pointer-events-none">
+                    </div>
+                    <h2 class="text-3xl font-bold mb-8 text-slate-900 flex items-center"><span
+                            class="bg-blue-100 text-blue-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-user-graduate"></i></span>Informasi Akademik</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2"><label class="text-xs font-bold text-slate-500 uppercase">Nama
+                                Mahasiswa</label><input type="text" id="nama"
+                                class="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-100 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        <div class="space-y-2"><label
+                                class="text-xs font-bold text-slate-500 uppercase">Gender</label><select id="gender"
+                                class="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-100 focus:border-blue-500 outline-none transition-colors">
+                                <option value="" disabled selected>Pilih...</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select></div>
+                        <div class="space-y-2"><label class="text-xs font-bold text-slate-500 uppercase">Program
+                                Studi</label><input type="text" id="jurusan"
+                                class="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-100 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        <div class="space-y-2"><label
+                                class="text-xs font-bold text-slate-500 uppercase">Fakultas</label><input type="text"
+                                id="fakultas"
+                                class="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-100 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        <div class="space-y-2"><label class="text-xs font-bold text-slate-500 uppercase">Perguruan
+                                Tinggi</label><input type="text" id="universitas"
+                                class="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-100 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        <div class="space-y-2"><label
+                                class="text-xs font-bold text-slate-500 uppercase">Minat/Konsentrasi</label>
+                            <p class="text-[11px] text-slate-400 leading-snug -mt-1">
+                                Minat atau Konsentrasi adalah pengkhususan studi yang diambil mahasiswa
+                                dalam satu program studi untuk mendalami bidang ilmu yang lebih spesifik.
+                            </p>
+                            <input type="text" id="minat" placeholder="Contoh: Digital Marketing, SDM"
+                                class="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-100 focus:border-blue-500 outline-none ring-2 ring-blue-50 transition-colors">
+                        </div>
+                    </div>
+                    <div class="mt-10 flex justify-end"><button onclick="goToStep2()"
+                            class="step-gradient text-white font-bold py-4 px-10 rounded-xl shadow-lg hover:opacity-90 hover:shadow-xl transition-all flex items-center space-x-3"><span>Mulai</span><i
+                                class="fas fa-arrow-right"></i></button></div>
+                </div>
+
+                <!-- STEP 2: Objek -->
+                <div id="step-2"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 flex items-center"><span
+                            class="bg-blue-100 text-blue-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-bullseye"></i></span>Objek Penelitian</h2>
+                    <p class="text-slate-500 mb-3">Tentukan objek yang spesifik dan <strong>sesuai minat</strong> Anda.
+                    </p>
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8 text-left">
+                        <p class="text-xs font-bold text-blue-700 mb-1"><i class="fas fa-info-circle mr-1"></i> Apa itu
+                            Objek Penelitian?</p>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">
+                            <strong>Objek penelitian</strong> adalah sasaran ilmiah yang menjadi fokus utama untuk
+                            diselidiki, dipahami, atau dipecahkan masalahnya, yang mencakup fenomena, benda, proses,
+                            maupun perilaku tertentu sesuai dengan batasan bidang ilmu yang ditekuni.
+                        </p>
+                        <p class="text-[11px] text-slate-500 mt-2 leading-relaxed">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-1"></i>
+                            <strong>Contoh:</strong> PT. Telkom Indonesia, UMKM Kuliner di Bandung, Siswa SMA Negeri 1
+                            Jakarta, Karyawan Bank BRI Cabang Surabaya, Masyarakat Desa Wisata Penglipuran.
+                        </p>
+                    </div>
+                    <div class="space-y-6 max-w-2xl mx-auto">
+                        <input type="text" id="custom-object"
+                            placeholder="Contoh: PT. Telkom, UMKM Kuliner, Siswa SMA X"
+                            class="w-full px-5 py-4 rounded-xl border-2 border-slate-200 outline-none focus:border-blue-500 text-lg transition-colors">
+                        <button id="ai-object-btn" onclick="fetchAIObjects()"
+                            class="w-full ai-robot-btn text-white font-bold py-4 rounded-xl shadow-md transition-all flex items-center justify-center">
+                            <span class="ai-robot-icon">
+                                <i class="fas fa-robot text-blue-600"></i>
+                            </span>
+                            Rekomendasi AI
+                        </button>
+                        <div id="ai-objects-list" class="hidden grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+                    </div>
+                    <div class="flex justify-between mt-12"><button onclick="backToStep1()"
+                            class="px-8 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors">Kembali</button><button
+                            onclick="goToStep3()"
+                            class="step-gradient text-white font-bold py-3 px-10 rounded-xl shadow-lg hover:opacity-90 transition-all">Lanjut</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Masalah -->
+                <div id="step-3"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 flex items-center"><span
+                            class="bg-orange-100 text-orange-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-exclamation-triangle"></i></span>Masalah Penelitian</h2>
+                    <p class="text-slate-500 mb-3">Identifikasi gap atau fenomena yang terjadi pada objek penelitianmu.
+                    </p>
+                    <div class="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-8 text-left">
+                        <p class="text-xs font-bold text-orange-700 mb-1"><i class="fas fa-info-circle mr-1"></i> Apa
+                            itu Masalah Penelitian?</p>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">
+                            <strong>Masalah penelitian</strong> merupakan suatu gap atau celah antara harapan dan
+                            kenyataan yang memerlukan pendalaman lebih lanjut guna menemukan solusi yang tepat secara
+                            akademis.
+                        </p>
+                        <p class="text-[11px] text-slate-500 mt-2 leading-relaxed">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-1"></i>
+                            <strong>Contoh:</strong> Penurunan omset 30% selama 6 bulan terakhir, tingginya tingkat
+                            turnover karyawan, rendahnya minat beli konsumen terhadap produk lokal, kurangnya literasi
+                            digital di kalangan UMKM.
+                        </p>
+                    </div>
+                    <div class="space-y-6 max-w-2xl mx-auto">
+                        <input type="text" id="custom-problem" placeholder="Contoh: Penurunan Omset, Tingginya Turnover"
+                            class="w-full px-5 py-4 rounded-xl border-2 border-slate-200 outline-none focus:border-blue-500 text-lg transition-colors">
+                        <button id="ai-problem-btn" onclick="fetchAIMasalah()"
+                            class="w-full ai-robot-btn text-white font-bold py-4 rounded-xl shadow-md transition-all flex items-center justify-center">
+                            <span class="ai-robot-icon">
+                                <i class="fas fa-robot text-blue-600"></i>
+                            </span>
+                            Rekomendasi AI
+                        </button>
+                        <div id="ai-problems-list" class="hidden grid grid-cols-2 gap-3"></div>
+                    </div>
+                    <div class="flex justify-between mt-12"><button onclick="backToStep2()"
+                            class="px-8 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors">Kembali</button><button
+                            onclick="goToStep4()"
+                            class="step-gradient text-white font-bold py-3 px-10 rounded-xl shadow-lg hover:opacity-90 transition-all">Lanjut</button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Analisis Kaitan -->
+                <div id="step-4"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 flex items-center"><span
+                            class="bg-purple-100 text-purple-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-link"></i></span>Validasi Keterkaitan</h2>
+                    <p class="text-slate-500 mb-8">Pengecekan akademik: Apakah Masalah, Objek, dan Latar Belakang
+                        Mahasiswa sinkron?</p>
+                    <div class="space-y-6 max-w-2xl mx-auto text-center">
+                        <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl">
+                            <p class="text-sm font-bold text-slate-600 mb-4">Parameter Analisis:</p>
+                            <div class="flex flex-wrap justify-center items-center gap-2 text-xs">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg border border-blue-200"
+                                    id="display-jurusan"></span>
+                                <i class="fas fa-plus text-slate-300"></i>
+                                <span
+                                    class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-lg border border-indigo-200"
+                                    id="display-objek"></span>
+                                <i class="fas fa-plus text-slate-300"></i>
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-lg border border-red-200"
+                                    id="display-masalah"></span>
+                            </div>
+                        </div>
+                        <button onclick="fetchAIConnectionAnalysis()" id="btn-analisis-kaitan"
+                            class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2"><i
+                                class="fas fa-gavel"></i> Uji Kelayakan Akademik</button>
+                        <div id="connection-analysis-result"
+                            class="hidden text-left p-6 rounded-xl text-sm leading-relaxed border transition-all"></div>
+                    </div>
+                    <div class="flex justify-between mt-12"><button onclick="backToStep3()"
+                            class="px-8 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors">Kembali</button><button
+                            id="btn-next-step-5" onclick="goToStep5()" disabled
+                            class="step-gradient text-white font-bold py-3 px-10 rounded-xl shadow-lg opacity-50 cursor-not-allowed hover:opacity-90 transition-all">Lanjut
+                            ke Metode</button></div>
+                </div>
+
+                <!-- STEP 5: Metode -->
+                <div id="step-5"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100 text-center">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 flex items-center"><span
+                            class="bg-green-100 text-green-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-tools"></i></span>Metode Penelitian</h2>
+                    <p class="text-slate-500 mb-10">Pilih pendekatan pengolahan data yang sesuai.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <div class="option-card p-8 rounded-2xl border-2 border-slate-100 bg-white cursor-pointer group"
+                            id="m-kuanti" onclick="selectMethod('Kuantitatif')">
+                            <div
+                                class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mb-6 mx-auto group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-lg mb-2">Kuantitatif</h4>
+                            <p class="text-[11px] text-slate-500 leading-snug">Menguji teori/hipotesis menggunakan data
+                                angka & statistik. Cocok untuk melihat pengaruh atau hubungan antar variabel.</p>
+                        </div>
+                        <div class="option-card p-8 rounded-2xl border-2 border-slate-100 bg-white cursor-pointer group"
+                            id="m-kuali" onclick="selectMethod('Kualitatif')">
+                            <div
+                                class="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mb-6 mx-auto group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-lg mb-2">Kualitatif</h4>
+                            <p class="text-[11px] text-slate-500 leading-snug">Eksplorasi mendalam untuk memahami makna,
+                                fenomena, atau proses. Menggunakan wawancara & observasi.</p>
+                        </div>
+                        <div class="option-card p-8 rounded-2xl border-2 border-slate-100 bg-white cursor-pointer group"
+                            id="m-rnd" onclick="selectMethod('R&D')">
+                            <div
+                                class="w-16 h-16 rounded-full bg-cyan-50 text-cyan-600 flex items-center justify-center text-2xl mb-6 mx-auto group-hover:bg-cyan-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-lg mb-2">R&D / Mixed</h4>
+                            <p class="text-[11px] text-slate-500 leading-snug">Penelitian pengembangan (produk/sistem)
+                                atau kombinasi metode (Mixed) untuk analisis yang komprehensif.</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-12"><button onclick="backToStep4()"
+                            class="px-8 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors">Kembali</button><button
+                            onclick="confirmData()"
+                            class="step-gradient text-white font-bold py-3 px-10 rounded-xl shadow-lg hover:opacity-90 transition-all">Generate
+                            Judul</button></div>
+                </div>
+
+                <!-- Confirmation Modal -->
+                <div id="confirm-modal"
+                    class="modal fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm overflow-y-auto py-6">
+                    <div
+                        class="bg-white rounded-3xl p-8 max-w-md mx-4 my-auto card-shadow animate-[fadeIn_0.3s_ease-out]">
+                        <div class="text-center mb-6">
+                            <div
+                                class="w-16 h-16 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mx-auto mb-4 text-3xl">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900">Konfirmasi Data Riset</h3>
+                            <p class="text-slate-500 text-sm mt-2">Pastikan data berikut sudah benar. Anda tidak dapat
+                                kembali ke menu ini setelah proses dimulai.</p>
+                        </div>
+                        <div
+                            class="bg-slate-50 p-4 rounded-xl text-left text-sm space-y-3 border border-slate-200 mb-6">
+                            <div><span class="block text-[10px] font-bold text-slate-400 uppercase">Minat Khusus</span>
+                                <p class="font-semibold text-slate-800" id="conf-minat">-</p>
+                            </div>
+                            <div><span class="block text-[10px] font-bold text-slate-400 uppercase">Objek
+                                    Penelitian</span>
+                                <p class="font-semibold text-slate-800" id="conf-objek">-</p>
+                            </div>
+                            <div><span class="block text-[10px] font-bold text-slate-400 uppercase">Masalah Utama</span>
+                                <p class="font-semibold text-slate-800" id="conf-masalah">-</p>
+                            </div>
+                            <div><span class="block text-[10px] font-bold text-slate-400 uppercase">Metode</span>
+                                <p class="font-semibold text-blue-700" id="conf-metode">-</p>
+                            </div>
+                        </div>
+                        <!-- Warning for single-use token users -->
+                        <div id="single-use-warning"
+                            class="hidden bg-amber-50 border border-amber-300 rounded-xl p-3 mb-4 text-xs text-amber-800">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-exclamation-triangle text-amber-500 mt-0.5 flex-shrink-0"></i>
+                                <div>
+                                    <p class="font-bold mb-1">Perhatian — Token Sekali Pakai</p>
+                                    <p>Setelah melanjutkan tahap ini, token Anda akan <strong>hangus</strong> dan tidak
+                                        bisa digunakan lagi untuk login. Pastikan:</p>
+                                    <ul class="list-disc pl-4 mt-1 space-y-0.5">
+                                        <li>Koneksi internet Anda <strong>stabil</strong></li>
+                                        <li>Selesaikan semua step sampai akhir hingga <strong>mengunduh dokumen
+                                                PDF</strong> di step final</li>
+                                        <li>Jangan tutup atau refresh halaman selama proses berlangsung</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><button onclick="closeConfirmModal()"
+                                class="flex-1 px-4 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-all">Periksa
+                                Lagi</button><button onclick="proceedToStep6()"
+                                class="flex-1 step-gradient text-white font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">Ya,
+                                Lanjut</button></div>
+                    </div>
+                </div>
+
+                <!-- STEP 6: Pilihan Judul -->
+                <div id="step-6" class="hidden space-y-6 pb-20 fade-in">
+                    <div
+                        class="flex justify-between items-center bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-900 flex items-center"><span
+                                    class="bg-blue-100 text-blue-700 p-3 rounded-xl mr-4 text-xl"><i
+                                        class="fas fa-file-alt"></i></span>Opsi Judul</h2>
+                            <p id="context-summary"
+                                class="text-xs text-blue-700 font-bold uppercase tracking-wide mt-1"></p>
+                        </div>
+                    </div>
+                    <div id="topics-list" class="space-y-6"></div>
+                    <div id="sticky-action"
+                        class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-blue-100 p-4 shadow-2xl z-40 transform translate-y-full transition-transform duration-300">
+                        <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+                            <div class="flex-1">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Pilihan:</p>
+                                <p id="selected-title-preview"
+                                    class="text-sm font-bold text-blue-900 line-clamp-1 italic">Pilih satu judul...</p>
+                            </div>
+                            <button id="btn-to-step-7" onclick="goToStep7()" disabled
+                                class="px-8 py-3 bg-slate-200 text-slate-400 font-bold rounded-xl cursor-not-allowed transition-all">Lanjut</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 7: Klarifikasi -->
+                <div id="step-7"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 flex items-center"><span
+                            class="bg-orange-100 text-orange-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-edit"></i></span>Klarifikasi Judul</h2>
+                    <p class="text-slate-500 mb-8 text-sm">Sesuaikan judul jika perlu.</p>
+                    <div class="space-y-8">
+                        <div class="p-6 bg-blue-50 border border-blue-100 rounded-2xl">
+                            <p id="chosen-title-display" class="font-serif text-xl font-bold text-slate-800"></p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="setRepairInstruction('Perluas cakupan penelitian ini')"
+                                class="quick-action-btn">Perluas Cakupan</button>
+                            <button onclick="setRepairInstruction('Spesifikkan ke lokasi/objek tertentu')"
+                                class="quick-action-btn">Spesifikkan Lokasi</button>
+                            <button onclick="setRepairInstruction('Fokuskan pada dampak positif')"
+                                class="quick-action-btn">Fokus Dampak</button>
+                            <button onclick="setRepairInstruction('Tambahkan variabel mediasi')"
+                                class="quick-action-btn">Tambah Mediasi</button>
+                        </div>
+                        <div id="repair-input-box" class="relative">
+                            <textarea id="repair-instruction" placeholder="Instruksi revisi manual (opsional)..."
+                                class="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-200 outline-none focus:border-blue-500 h-28 text-sm transition-colors"></textarea>
+                            <button id="btn-repair" onclick="repairTitle()"
+                                class="absolute bottom-3 right-3 bg-slate-800 text-white text-xs font-bold py-2 px-4 rounded-lg hover:bg-black transition-colors"><i
+                                    class="fas fa-magic"></i> Perbaiki AI</button>
+                        </div>
+                        <p
+                            class="text-xs text-red-600 bg-red-50 border border-red-200 p-3 rounded-lg mt-3 text-center font-bold animate-pulse">
+                            <i class="fas fa-exclamation-triangle mr-2"></i> Hanya bisa 1x perbaikan
+                        </p>
+                        <div id="comparison-area" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div id="opt-original" onclick="selectFinalTitle('original')"
+                                class="title-option p-6 rounded-2xl cursor-pointer group"><span
+                                    class="bg-slate-100 text-slate-500 rounded px-2 py-1 text-[10px] font-bold uppercase">Awal</span>
+                                <p id="text-original" class="font-semibold text-slate-700 text-sm mt-2"></p>
+                            </div>
+                            <div id="opt-repaired" onclick="selectFinalTitle('repaired')"
+                                class="title-option p-6 rounded-2xl cursor-pointer group"><span
+                                    class="bg-blue-100 text-blue-700 rounded px-2 py-1 text-[10px] font-bold uppercase">AI</span>
+                                <p id="text-repaired" class="font-semibold text-slate-800 text-sm mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-10"><button onclick="backToStep6()"
+                            class="px-8 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors">Pilih
+                            Lain</button><button onclick="goToStep8()"
+                            class="step-gradient text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:opacity-90 transition-all">Standarisasi</button>
+                    </div>
+                </div>
+
+                <!-- STEP 8: Standarisasi -->
+                <div id="step-8"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 flex items-center"><span
+                            class="bg-green-100 text-green-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-check-circle"></i></span>Standarisasi Ilmiah</h2>
+                    <p class="text-slate-500 mb-8 text-sm">Pilih format bahasa akademik terbaik.</p>
+                    <div id="standardization-result" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div onclick="selectStandardization('raw')" id="std-opt-raw"
+                                class="title-option p-6 rounded-2xl cursor-pointer group border-2 border-slate-200">
+                                <span
+                                    class="bg-slate-100 text-slate-500 rounded px-2 py-1 text-[10px] font-bold uppercase">Dari
+                                    Pilihan Klarifikasi</span>
+                                <p id="std-title-raw" class="font-semibold text-slate-700 text-sm mt-3"></p>
+                            </div>
+                            <div onclick="selectStandardization('std')" id="std-opt-std"
+                                class="title-option p-6 rounded-2xl cursor-pointer group border-2 border-slate-200">
+                                <span
+                                    class="bg-emerald-100 text-emerald-700 rounded px-2 py-1 text-[10px] font-bold uppercase">Standar
+                                    Ilmiah ✨</span>
+                                <p id="std-title-std" class="font-serif font-bold text-slate-900 text-sm mt-3"></p>
+                            </div>
+                        </div>
+                        <div class="flex justify-end"><button onclick="goToStep9()"
+                                class="step-gradient text-white font-bold py-3 px-10 rounded-xl shadow-lg hover:opacity-90 transition-all">Lanjut
+                                Telaah</button></div>
+                    </div>
+                </div>
+
+                <!-- STEP 9: Telaah -->
+                <div id="step-9"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100 text-center">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 flex items-center"><span
+                            class="bg-purple-100 text-purple-700 p-3 rounded-xl mr-4 text-xl"><i
+                                class="fas fa-search"></i></span>Telaah Akademik</h2>
+                    <div id="analysis-result" class="hidden">
+                        <div class="bg-blue-50 p-6 rounded-2xl mb-10">
+                            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Judul Final
+                            </h3>
+                            <p id="analyzed-title" class="font-bold text-lg text-slate-800 font-serif"></p>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+                            <div class="flex flex-col items-center">
+                                <div id="score-circle-urgency" class="score-circle mb-3"><span id="score-urgency-val"
+                                        class="text-xl font-extrabold text-slate-800">0%</span></div>
+                                <h4 class="font-bold text-slate-700 text-xs uppercase">Necessity</h4>
+                                <p class="text-[9px] text-slate-400 mt-1">Urgensi</p>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div id="score-circle-novelty" class="score-circle mb-3"><span id="score-novelty-val"
+                                        class="text-xl font-extrabold text-slate-800">0%</span></div>
+                                <h4 class="font-bold text-slate-700 text-xs uppercase">Novelty</h4>
+                                <p class="text-[9px] text-slate-400 mt-1">Kebaruan</p>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div id="score-circle-relevance" class="score-circle mb-3"><span
+                                        id="score-relevance-val" class="text-xl font-extrabold text-slate-800">0%</span>
+                                </div>
+                                <h4 class="font-bold text-slate-700 text-xs uppercase">Relevance</h4>
+                                <p class="text-[9px] text-slate-400 mt-1">Kesesuaian</p>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div id="score-circle-feasibility" class="score-circle mb-3"><span
+                                        id="score-feasibility-val"
+                                        class="text-xl font-extrabold text-slate-800">0%</span></div>
+                                <h4 class="font-bold text-slate-700 text-xs uppercase">Feasibility</h4>
+                                <p class="text-[9px] text-slate-400 mt-1">Kelayakan</p>
+                            </div>
+                        </div>
+                        <div id="analysis-feedback-container" class="text-left space-y-4"></div>
+                        <div id="analysis-conclusion"
+                            class="mt-8 p-6 bg-slate-50 rounded-xl border border-slate-200 text-left">
+                            <h4 class="font-bold text-slate-800 mb-2">Kesimpulan (Sintesis):</h4>
+                            <p id="synthesis-text" class="text-sm text-slate-600 text-justify italic"></p>
+                            <div id="avg-score-display"
+                                class="mt-4 font-bold text-lg text-blue-800 text-center border-t pt-2"></div>
+                        </div>
+                        <div id="analysis-actions" class="space-y-4 mt-8"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 10: Kerangka Penelitian -->
+                <div id="step-10"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100">
+                    <div class="flex justify-between items-start mb-8">
+                        <h2 id="logic-title-display" class="text-2xl font-bold text-slate-900 flex items-center"><span
+                                class="bg-blue-100 text-blue-700 p-3 rounded-xl mr-4 text-xl"><i
+                                    class="fas fa-project-diagram"></i></span>Kerangka Penelitian</h2>
+                    </div>
+                    <div id="logic-container">
+                        <div class="mb-6">
+                            <h2 id="hypo-title-display" class="font-serif text-xl font-bold text-slate-900"></h2>
+                        </div>
+                        <div class="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-800">
+                            <p class="font-bold mb-1"><i class="fas fa-info-circle"></i> Info Metode <span
+                                    id="method-info-badge" class="uppercase font-bold"></span>:</p>
+                            <p id="method-info-text"></p>
+                        </div>
+                        <div id="logic-content" class="space-y-6"></div>
+                    </div>
+                    <div class="mt-10"><button onclick="goToStep11()"
+                            class="w-full step-gradient text-white font-bold py-4 rounded-xl shadow-lg hover:opacity-90 transition-all">Lanjut
+                            ke Plan</button></div>
+                </div>
+
+                <!-- STEP 11: Plan -->
+                <div id="step-11"
+                    class="hidden fade-in bg-white rounded-3xl p-8 md:p-10 card-shadow border border-slate-100 pb-20">
+                    <div class="flex justify-between items-start mb-8">
+                        <h2 class="text-2xl font-bold text-slate-900 flex items-center"><span
+                                class="bg-green-100 text-green-700 p-3 rounded-xl mr-4 text-xl"><i
+                                    class="fas fa-calendar-check"></i></span>Action Plan</h2>
+                    </div>
+                    <div id="plan-container">
+                        <div class="mb-6">
+                            <h2 id="final-title-display" class="font-serif text-xl font-bold text-slate-900"></h2>
+                            <p id="final-context-display" class="text-sm text-slate-500 mt-2 font-medium"></p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                            <div class="space-y-4">
+                                <h4 class="text-slate-800 font-bold uppercase text-xs tracking-widest border-b pb-2">1.
+                                    Pengumpulan Data</h4>
+                                <div id="data-steps" class="space-y-3"></div>
+                            </div>
+                            <div class="space-y-4">
+                                <h4 class="text-slate-800 font-bold uppercase text-xs tracking-widest border-b pb-2">2.
+                                    Analisis</h4>
+                                <div id="analysis-steps" class="space-y-3"></div>
+                            </div>
+                        </div>
+                        <div class="mt-8 p-6 bg-yellow-50 rounded-2xl border border-yellow-100">
+                            <h4 class="text-yellow-800 font-bold mb-2 text-sm"><i class="fas fa-lightbulb mr-2"></i>
+                                Tips</h4>
+                            <p id="ai-tips" class="text-sm text-yellow-900 italic"></p>
+                        </div>
+                        <div class="mt-6 p-6 bg-purple-50 rounded-2xl border border-purple-100">
+                            <h4 class="text-purple-800 font-bold mb-2 text-sm"><i
+                                    class="fas fa-question-circle mr-2"></i> Pertanyaan untuk Dosen Pembimbing</h4>
+                            <ul id="supervisor-questions" class="list-disc pl-5 text-sm text-purple-900 space-y-1"></ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 space-y-6 no-print">
+                        <div class="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-slate-800">1. Analisis Judul (5W + 1H)</h4>
+                                <button id="btn-analysis" onclick="generateAnalysis5W1H()"
+                                    class="bg-blue-50 border-2 border-blue-200 text-blue-700 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 flex items-center justify-center gap-2 transition-all text-sm"><i
+                                        class="fas fa-search"></i> Mulai Analisis</button>
+                            </div>
+                            <div id="generated-abstract"
+                                class="hidden p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <div id="abstract-content" class="text-sm text-slate-700 italic text-justify"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-slate-800">2. Instrumen Penelitian</h4>
+                                <button id="btn-instruments" onclick="generateInstruments()"
+                                    class="bg-emerald-50 border-2 border-emerald-200 text-emerald-700 font-bold py-2 px-4 rounded-xl hover:bg-emerald-100 flex items-center justify-center gap-2 transition-all text-sm"><i
+                                        class="fas fa-list-check"></i> Susun Instrumen</button>
+                            </div>
+                            <div id="generated-instruments"
+                                class="hidden p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <div id="instruments-content" class="text-sm text-slate-700 space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center mt-8">
+                        <button id="btn-download-pdf"
+                            onclick="if(typeof downloadPDF==='function'){downloadPDF()}else{alert('PDF generator belum siap. Coba refresh halaman (Ctrl+Shift+R).')}"
+                            class="bg-blue-600 text-white font-bold py-4 px-12 rounded-xl shadow-lg hover:bg-blue-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                            disabled>
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
+                    </div>
+
+                <!-- Success Modal -->
+                <div id="success-modal" class="modal fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm">
+                    <div
+                        class="bg-white rounded-3xl p-10 max-w-sm mx-4 text-center card-shadow transform transition-all scale-100">
+                        <div
+                            class="w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-6 text-4xl animate-bounce">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-3">Semangat Skripsinya!</h3>
+                        <p class="text-slate-500 text-base leading-relaxed mb-6">Langkah besar dimulai dari sini. Selalu
+                            gunakan <strong>Dosbing.ai</strong> sebagai teman risetmu. Sukses untuk sidangmu nanti!</p>
+                    </div>
+                </div>
+
+                <!-- Loading Overlay (Hybrid: Status + EduTips) -->
+                <div id="loading"
+                    class="hidden fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex flex-col items-center justify-center text-center p-6">
+
+                    <!-- 1. Technical Status (Top) -->
+                    <div class="mb-12 relative">
+                        <div class="loading-spinner mb-6 mx-auto w-16 h-16 border-4 border-blue-100 border-t-blue-600">
+                        </div>
+                        <h3 id="loading-title" class="text-xl font-bold text-slate-800 mb-2">Memproses Data</h3>
+                        <p id="loading-status"
+                            class="text-blue-600 font-mono text-xs uppercase tracking-widest animate-pulse">CONNECTING
+                            TO AI...</p>
+                    </div>
+
+                    <!-- 2. Educational Card (Bottom) -->
+                    <div
+                        class="max-w-md w-full bg-slate-50 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden group">
+                        <!-- Decorative bg -->
+                        <div
+                            class="absolute top-0 right-0 p-4 opacity-10 text-6xl text-blue-500 transform rotate-12 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+
+                        <div class="relative z-10 text-left">
+                            <span
+                                class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide mb-3 inline-block">
+                                <i class="fas fa-info-circle mr-1"></i> Did You Know?
+                            </span>
+                            <div id="loading-tips" class="min-h-[60px] flex items-center">
+                                <p class="text-slate-600 text-sm leading-relaxed italic">
+                                    "Judul skripsi yang baik harus memiliki variabel terikat dan bebas yang jelas."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar for Tips -->
+                        <div class="absolute bottom-0 left-0 h-1 bg-blue-500/10 w-full">
+                            <div id="tips-progress" class="h-full bg-blue-500 w-0"></div>
+                        </div>
+                    </div>
+
+                    <button onclick="hideAll(); document.getElementById('step-1').classList.remove('hidden');"
+                        class="absolute bottom-10 text-slate-400 hover:text-red-500 text-xs mt-8 transition-colors">
+                        Batal / Kembali
+                    </button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="/src/js/pdf-generator.js?v=4"></script>
+    <script type="module" src="/src/js/app-standalone.js"></script>
+</body>
+
+</html>

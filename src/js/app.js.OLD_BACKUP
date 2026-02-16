@@ -1,0 +1,215 @@
+// Main application logic for Research Path Generator
+// Secure version using serverless API endpoints
+
+// Check authentication
+checkAuth();
+
+// Session management
+function checkAuth() {
+    const session = sessionStorage.getItem('dosbing_session');
+    if (!session) {
+        window.location.href = '/';
+        return;
+    }
+
+    try {
+        const data = JSON.parse(session);
+        if (data.role === 'admin') {
+            // Admin can access app, but might want to go to dashboard
+            const goToDashboard = confirm('You are logged in as Admin. Go to dashboard?');
+            if (goToDashboard) {
+                window.location.href = '/admin.html';
+                return;
+            }
+        }
+    } catch (e) {
+        sessionStorage.removeItem('dosbing_session');
+        window.location.href = '/';
+    }
+}
+
+// Logout function
+const logoutBtn = document.getElementById('logout-btn');
+logoutBtn?.addEventListener('click', () => {
+    sessionStorage.removeItem('dosbing_session');
+    window.location.href = '/';
+});
+
+// AI Helper Function - calls serverless function instead of direct API
+async function fetchAI(prompt, systemInstruction) {
+    try {
+        const response = await fetch('/api/ai-request', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                prompt,
+                systemInstruction
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('AI request failed');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('AI Error:', error);
+        alert('Koneksi AI Gagal. Coba lagi.');
+        throw error;
+    }
+}
+
+// Helper to clean markdown/LaTeX
+function cleanText(text) {
+    if (!text) return "";
+    return text.replace(/[*#_`]/g, '').replace(/\$([a-zA-Z0-9_]+)\$/g, '$1').replace(/:/g, ': ').replace(/\s+/g, ' ').trim();
+}
+
+// Application State
+let userData = {
+    nama: "", gender: "", jurusan: "", fakultas: "", universitas: "", minat: "",
+    objek: "", masalah: "", metode: "", analisisMasalah: ""
+};
+let selectedTitle = "", originalTitle = "", repairedTitle = "", standardizedTitle = "", finalTitle = "";
+let analysisAttempt = 0, savedLogicData = null, savedPlanData = null, savedAnalysisData = null, savedAnalysis5W1H = null;
+let abstractDone = false, instrumentsDone = false;
+let currentTitleBase = "";
+let savedTitles = [];
+
+// UI Helper Functions
+function hideAll() {
+    ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8', 'step-9', 'step-10', 'step-11', 'loading'].forEach(id => {
+        document.getElementById(id)?.classList.add('hidden');
+    });
+    const s = document.getElementById('sticky-action');
+    if (s) {
+        s.classList.remove('translate-y-0');
+        s.classList.add('translate-y-full');
+    }
+}
+
+function updateProgress(step) {
+    const width = (step - 1) * 10;
+    document.getElementById('progress-fill').style.width = `${width}%`;
+
+    for (let i = 1; i <= 11; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (!dot) continue;
+        const label = dot.parentElement.querySelector('.step-label');
+        dot.className = "step-dot transition-all duration-300";
+        label.className = "step-label transition-colors duration-300";
+
+        if (i < step) {
+            dot.classList.add("bg-emerald-500", "text-white");
+            dot.innerHTML = `<i class="fas fa-check"></i>`;
+            label.classList.add("text-emerald-600");
+        } else if (i === step) {
+            dot.classList.add("bg-blue-600", "ring-4", "ring-blue-100", "scale-125");
+            dot.innerHTML = "";
+            label.classList.add("text-blue-700");
+        } else {
+            dot.classList.add("bg-slate-200");
+            dot.innerHTML = "";
+            label.classList.add("text-slate-400");
+        }
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showLoading(title, text) {
+    hideAll();
+    const l = document.getElementById('loading');
+    l.classList.remove('hidden');
+    document.getElementById('loading-title').innerText = title;
+    document.getElementById('loading-text').innerText = text;
+}
+
+// Step Navigation Functions
+window.goToStep2 = function () {
+    userData.nama = document.getElementById('nama').value;
+    userData.gender = document.getElementById('gender').value;
+    userData.jurusan = document.getElementById('jurusan').value;
+    userData.fakultas = document.getElementById('fakultas').value;
+    userData.universitas = document.getElementById('universitas').value;
+    userData.minat = document.getElementById('minat').value;
+
+    if (!userData.nama || !userData.gender || !userData.jurusan) {
+        return alert("Lengkapi data!");
+    }
+
+    hideAll();
+    document.getElementById('step-2').classList.remove('hidden');
+    updateProgress(2);
+}
+
+window.backToStep1 = function () {
+    hideAll();
+    document.getElementById('step-1').classList.remove('hidden');
+    updateProgress(1);
+}
+
+// AI Object Recommendations
+window.fetchAIObjects = async function () {
+    const btn = document.getElementById('ai-object-btn');
+    btn.disabled = true;
+    btn.innerHTML = "Loading...";
+
+    try {
+        const data = await fetchAI(
+            `Konteks: Jurusan ${userData.jurusan}, Fakultas ${userData.fakultas}, Perguruan Tinggi ${userData.universitas}. FOKUS UTAMA Minat Mahasiswa: "${userData.minat}". Sebutkan 8 objek penelitian spesifik yang sangat relevan. BATASAN: 2-5 kata saja. JSON: { objects: [string] }`,
+            "Sebutkan 8 objek penelitian spesifik (2-5 kata). JSON: { objects: [string] }"
+        );
+
+        const list = document.getElementById('ai-objects-list');
+        list.innerHTML = '';
+
+        data.objects.forEach((obj, idx) => {
+            const d = document.createElement('div');
+            d.className = `p-3 bg-slate-50 border-2 border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-blue-50 hover:border-blue-300 cursor-pointer text-center fade-in stagger-${(idx % 4) + 1} transition-all`;
+            d.innerText = cleanText(obj);
+            d.onclick = () => {
+                document.getElementById('custom-object').value = cleanText(obj);
+                Array.from(list.children).forEach(child => {
+                    child.classList.remove('bg-blue-100', 'border-blue-600', 'text-blue-800', 'shadow-md');
+                    child.classList.add('bg-slate-50', 'border-slate-200', 'text-slate-600');
+                });
+                d.classList.remove('bg-slate-50', 'border-slate-200', 'text-slate-600');
+                d.classList.add('bg-blue-100', 'border-blue-600', 'text-blue-800', 'shadow-md');
+            };
+            list.appendChild(d);
+        });
+
+        list.classList.remove('hidden');
+    } catch (e) {
+        console.error(e);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-sparkles"></i> Rekomendasi AI`;
+    }
+}
+
+window.goToStep3 = function () {
+    userData.objek = document.getElementById('custom-object').value;
+    if (!userData.objek) return alert("Isi objek!");
+    hideAll();
+    document.getElementById('step-3').classList.remove('hidden');
+    updateProgress(3);
+}
+
+window.backToStep2 = function () {
+    hideAll();
+    document.getElementById('step-2').classList.remove('hidden');
+    updateProgress(2);
+}
+
+// Continue with additional steps...
+// NOTE: The complete implementation would include all 11 steps
+// This is a starter template showing the pattern with secure API calls
+
+// Initialize
+console.log('Dosbing.ai Research Generator - Secure Version');
+console.log('Using serverless AI endpoints');

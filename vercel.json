@@ -1,0 +1,15 @@
+{
+    "version": 2,
+    "buildCommand": "echo 'No build needed - static files'",
+    "outputDirectory": ".",
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/$1"
+        }
+    ]
+}

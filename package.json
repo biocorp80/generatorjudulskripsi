@@ -1,0 +1,19 @@
+{
+  "name": "dosbing-ai-research-generator",
+  "version": "1.0.0",
+  "description": "Secure Research Path Generator with Token Authentication",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "echo 'Static files - no build needed'",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "xlsx": "^0.18.5",
+    "jspdf": "^2.5.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.11"
+  }
+}
